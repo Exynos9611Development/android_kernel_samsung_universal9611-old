@@ -30,3 +30,14 @@ obj-$(CONFIG_CGROUP_DEVICE)		+= device_cgroup.o
 # Object integrity file lists
 subdir-$(CONFIG_INTEGRITY)		+= integrity
 obj-$(CONFIG_INTEGRITY)			+= integrity/
+
+ccflags-y := -I$(srctree)/security/selinux -I$(srctree)/security/selinux/include
+
+$(addprefix $(obj)/,$(selinux-y)): $(obj)/flask.h
+
+quiet_cmd_flask = GEN     $(obj)/flask.h $(obj)/av_permissions.h
+      cmd_flask = scripts/selinux/genheaders/genheaders $(obj)/flask.h $(obj)/av_permissions.h
+
+targets += flask.h av_permissions.h
+$(obj)/flask.h: $(src)/include/classmap.h FORCE
+	$(call if_changed,flask)

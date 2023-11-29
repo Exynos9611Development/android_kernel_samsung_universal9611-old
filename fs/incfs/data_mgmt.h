@@ -109,6 +109,9 @@ struct mount_info {
 	struct path mi_backing_dir_path;
 
 	struct dentry *mi_index_dir;
+	/* For stacking mounts, if true, this indicates if the index dir needs
+	 * to be freed for this SB otherwise it was created by lower level SB */
+	bool mi_index_free;
 
 	const struct cred *mi_owner;
 
@@ -145,6 +148,12 @@ struct mount_info {
 
 	/* Temporary buffer for read logger. */
 	struct read_log mi_log;
+
+	void *log_xattr;
+	size_t log_xattr_size;
+
+	void *pending_read_xattr;
+	size_t pending_read_xattr_size;
 };
 
 struct data_file_block {

@@ -32,8 +32,6 @@ obj-$(CONFIG_IOSCHED_BFQ)	+= bfq.o
 
 obj-$(CONFIG_BLOCK_COMPAT)	+= compat_ioctl.o
 obj-$(CONFIG_BLK_CMDLINE_PARSER)	+= cmdline-parser.o
-obj-$(CONFIG_BLK_DEV_CRYPT)	+= blk-crypt.o
-obj-$(CONFIG_BLK_DEV_CRYPT_DISKCIPHER)	+= blk-crypt-fmp.o
 obj-$(CONFIG_BLK_DEV_INTEGRITY) += bio-integrity.o blk-integrity.o t10-pi.o
 obj-$(CONFIG_BLK_MQ_PCI)	+= blk-mq-pci.o
 obj-$(CONFIG_BLK_MQ_VIRTIO)	+= blk-mq-virtio.o
@@ -54,3 +52,6 @@ CFLAGS_elevator.o = -Wformat
 CFLAGS_cfq-iosched.o = -Wformat
 CFLAGS_genhd.o = -Wformat
 
+obj-$(CONFIG_BLK_INLINE_ENCRYPTION)	+= keyslot-manager.o bio-crypt-ctx.o \
+					   blk-crypto.o
+obj-$(CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK)	+= blk-crypto-fallback.o
