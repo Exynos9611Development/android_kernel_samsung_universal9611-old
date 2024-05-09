@@ -88,3 +88,9 @@ config PROC_UID
 	depends on PROC_FS && RT_MUTEXES
 	help
 	Provides aggregated per-uid information under /proc/uid.
+
+config PROC_SPOOF_CMDLINE
+	bool "Spoof locked bootloader properties in cmdline"
+	default n
+	help
+	For Play Integrity API / SafetyNet attestation
