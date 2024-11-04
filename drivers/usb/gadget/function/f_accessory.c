@@ -702,7 +702,14 @@ static ssize_t acc_read(struct file *fp, char __user *buf,
 		goto done;
 	}
 
-	data_length = ALIGN(count, dev->ep_out->maxpacket);
+	/*
+	 * Calculate the data length by considering termination character.
+	 * Then compansite the difference of rounding up to
+	 * integer multiple of maxpacket size.
+	 */
+	data_length = count;
+	data_length += dev->ep_out->maxpacket - 1;
+	data_length -= data_length % dev->ep_out->maxpacket;
 
 	if (dev->rx_done) {
 		// last req cancelled. try to get it.
@@ -1064,6 +1071,26 @@ err:
 	return value;
 }
 EXPORT_SYMBOL_GPL(acc_ctrlrequest);
+
+int acc_ctrlrequest_composite(struct usb_composite_dev *cdev,
+			      const struct usb_ctrlrequest *ctrl)
+{
+	u16 w_length = le16_to_cpu(ctrl->wLength);
+
+	if (w_length > USB_COMP_EP0_BUFSIZ) {
+		if (ctrl->bRequestType & USB_DIR_IN) {
+			/* Cast away the const, we are going to overwrite on purpose. */
+			__le16 *temp = (__le16 *)&ctrl->wLength;
+
+			*temp = cpu_to_le16(USB_COMP_EP0_BUFSIZ);
+			w_length = USB_COMP_EP0_BUFSIZ;
+		} else {
+			return -EINVAL;
+		}
+	}
+	return acc_ctrlrequest(cdev, ctrl);
+}
+EXPORT_SYMBOL_GPL(acc_ctrlrequest_composite);
 
 static int
 __acc_function_bind(struct usb_configuration *c,
