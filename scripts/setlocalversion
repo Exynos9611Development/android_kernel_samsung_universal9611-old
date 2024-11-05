@@ -44,7 +44,7 @@ scm_version()
 	fi
 
 	if test "$CONFIG_KSU" = "y"; then
-		printf "KSU"
+		printf "-KSU"
 	fi
 
 	# Check for git and a git repo.
