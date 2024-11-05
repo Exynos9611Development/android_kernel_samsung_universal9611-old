@@ -72,8 +72,3 @@ jobs:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_KEY }}
           document: ./Grass*.zip
-          message: |
-            📦 Grass Kernel for:
-            📱 Device: ${{matrix.device}}
-            📦 ROM: based-${{matrix.rom}}
-            🔧 KSU: ${{matrix.ksu == '' && 'Yes' || 'No'}}
